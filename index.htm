@@ -1,0 +1,138 @@
+<html>
+
+<head>
+	<link rel="stylesheet" href="style.css">
+</head>
+<center>
+
+	<body>
+		<label>Name</label><input id="NameBox" type="text"><br><br>
+		<label>RollNo</label><input id="RollBox" type="text"><br><br>
+		<label>Section</label><input id="SecBox" type="text"><br><br>
+		<label>Gender</label>
+		<select id="GenBox">
+			<option value="male">Male</option>
+			<option value="female">Female</option>
+		</select>
+		<hr>
+		<button id="Insbtn">Insert</button>
+		<button id="Selbtn">Select</button>
+		<button id="Updbtn">Update</button>
+		<button id="Delbtn">Delete</button>
+
+</center>
+
+<script type="module">
+	// Import the functions you need from the SDKs you need
+	import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+	import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-analytics.js";
+	// TODO: Add SDKs for Firebase products that you want to use
+	// https://firebase.google.com/docs/web/setup#available-libraries
+
+	// Your web app's Firebase configuration
+	// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+	const firebaseConfig = {
+		apiKey: "AIzaSyAx-ODd3VFfzruOOBiJAZrNDLoy_fLZ_B8",
+		authDomain: "ypdb-19a2e.firebaseapp.com",
+		projectId: "ypdb-19a2e",
+		storageBucket: "ypdb-19a2e.appspot.com",
+		messagingSenderId: "427016439919",
+		appId: "1:427016439919:web:1924ca0f0f661870afe59a"
+	};
+
+
+	// Initialize Firebase
+
+	const app = initializeApp(firebaseConfig);
+	import { getFirestore, doc, setDoc, addDoc, updateDoc, deleteDoc, getDoc, collection } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+	const db = getFirestore();
+	let NameBox = document.getElementById("Namebox");
+	let RollBox = document.getElementById("Rollbox");
+	let SecBox = document.getElementById("Secbox");
+	let GenBox = document.getElementById("Genbox");
+	let Insbtn = document.getElementById("Insbtn");
+	let Selbtn = document.getElementById("Selbtn");
+	let Updbtn = document.getElementById("Updbtn");
+	let Delbtn = document.getElementById("Delbtn");
+	async function AddDocument_CustomID() {
+		var ref = doc(db, "thestudentlist", document.getElementById("RollBox").value);
+		await setDoc(
+			ref, {
+			NameofStd: document.getElementById("NameBox").value,
+			RollNo: document.getElementById("RollBox").value,
+			Section: document.getElementById("SecBox").value,
+			Gender: document.getElementById("GenBox").value
+		}
+		)
+
+			.then(() => {
+
+				alert("data added successfully");
+
+			}
+			)
+			.catch((error) => {
+				alert("unsuccessfull,error:" + error);
+			});
+
+	}
+	async function GetADocument() {
+		var ref = doc(db, "thestudentlist", document.getElementById("RollBox").value)
+		const docSnap = await getDoc(ref);
+		if (docSnap.exists()) {
+			alert("tested");
+			document.getElementById("NameBox").value = docSnap.data().NameofStd;
+			document.getElementById("SecBox").value = docSnap.data().Section;
+			document.getElementById("GenBox").value = docSnap.data().Gender;
+		} else {
+			alert("no such document");
+		}
+	}
+	async function UpdateFieldsInaDocument() {
+		var ref = doc(db, "thestudentlist", document.getElementById("RollBox").value);
+		await updateDoc(
+			ref, {
+			NameofStd: document.getElementById("NameBox").value,
+			//RollNo: document.getElementById("RollBox").value,
+			Section: document.getElementById("SecBox").value,
+			Gender: document.getElementById("GenBox").value
+		}
+
+
+		).then(() => {
+			alert("data updated successfully");
+
+		}
+		).catch((error) => {
+			alert("unsuccessfull,error:" + error);
+		})
+	}
+	async function deleteAdoc() {
+		var ref = doc(db, "thestudentlist", document.getElementById("RollBox").value);
+		const docSnap = await getDoc(ref);
+		if (!docSnap.exists()) {
+			alert("document not avaiable");
+			return;
+
+
+		}
+		await deleteDoc(ref)
+			.then(() => {
+				alert("datat deleted successfully");
+
+			}).catch((error) => {
+				alert("unsuccessful op", +error);
+
+			});
+	}
+	Insbtn.addEventListener("click", AddDocument_CustomID);
+	Selbtn.addEventListener("click", GetADocument);
+	Updbtn.addEventListener("click", UpdateFieldsInaDocument);
+	Delbtn.addEventListener("click", deleteAdoc);
+
+
+</script>
+</body>
+
+</html>
